@@ -12,14 +12,10 @@ public class Position {
         return y;
     }
 
-
-
     public Position(int x, int y) {
         this.x = x;
         this.y = y;
     }
-
-
 
     public boolean canJumpOver(Position toJumpOver) {
         if ((Math.abs(this.x - toJumpOver.x) == 2 && this.y == toJumpOver.y) || (Math.abs(this.y - toJumpOver.y) == 2 && this.y == toJumpOver.y)) {
@@ -29,9 +25,20 @@ public class Position {
     }
 
     public boolean normalMove(Position toMove) {
-        if ((Math.abs(this.x - toMove.x) == 1 && this.y == toMove.y) || (Math.abs(this.y - toMove.y) == 1 && this.y == toMove.y)) {
+        if ((Math.abs(this.x - toMove.x) == 1 && this.y == toMove.y) || (Math.abs(this.y - toMove.y) == 1 && this.x == toMove.x)) {
             return true;
         }
         return false;
     }
+
+    public boolean jumpMove(Position toMove){
+        if ((Math.abs(this.x - toMove.x) == 2 && this.y == toMove.y) || (Math.abs(this.y - toMove.y) == 2 && this.x == toMove.x)) {
+            return true;
+        }
+        if(Math.abs(this.x - toMove.x) == 1 && Math.abs(this.y - toMove.y)==1){
+            return true;
+        }
+        return false;
+    }
+
 }
