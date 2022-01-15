@@ -2,6 +2,7 @@ package com.example.jumpers;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -60,12 +61,12 @@ public class Jumper {
         System.out.println(board );
         this.guiJumper.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                if (player.getBoard().getActualPlay().equals(player)){
+                if (player.getBoard().getActualPlay().equals(player) && !player.getBoard().actualJumperMove()){
                     gui.setFill(Color.YELLOW);
                     if (clicked.player.getBoard().getActualChoosed()!=null){
                         clicked.player.getBoard().getActualChoosed().getCircleJumper().setFill(clicked.player.getBoard().getActualChoosed().getColor());
-
                         clicked.getCircleJumper().setFill(Color.YELLOW);
+                       // clicked.addShadow();
                     }
                     clicked.player.getBoard().setActualChoosed(clicked);
 
@@ -77,9 +78,25 @@ public class Jumper {
 
     }
 
+    public void addShadow(){
+        DropShadow ds = new DropShadow();
+        ds.setOffsetY(0);
+        ds.setOffsetX(0);
+        ds.setRadius(30);
+        ds.setColor(Color.YELLOW);
+        this.getCircleJumper().setEffect(ds);
 
+    }
 
     public void setPosition(Position newPosition) {
         this.position=newPosition;
+    }
+
+    public void removeClickOn() {
+        if(this.player.getBoard().getActualChoosed()!=null ){ //&& !this.position.equals(this.player.getBoard().getActualChoosed().getPosition()
+            this.getCircleJumper().setFill(this.color);
+
+        }
+       //  this.player.getBoard().setActualChoosed(null);
     }
 }
