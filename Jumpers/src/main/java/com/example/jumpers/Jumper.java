@@ -2,12 +2,16 @@ package com.example.jumpers;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.control.Button;
+import javafx.scene.effect.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.geometry.HPos;
 
@@ -56,6 +60,7 @@ public class Jumper {
     //SHOW CHOOSE JUMPER BY CLICK
     public void choose(GridPane g ){
         Circle gui =  this.guiJumper;
+        addStyle(gui);
         Jumper clicked = this;
         Board board = this.player.getBoard();
         System.out.println(board );
@@ -98,5 +103,17 @@ public class Jumper {
 
         }
        //  this.player.getBoard().setActualChoosed(null);
+    }
+
+    public void addStyle(Circle pawn){
+     //   pawn.setStyle(
+        //                "-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );"+
+      //                  "-fx-text-fill: linear-gradient(white, #d0d0d0);"+
+          //              "-fx-padding: 10 20 10 20;");
+
+        pawn.setStyle("    -fx-padding: 8 15 15 15;\n" +
+               " -fx-effect: dropshadow( one-pass-box , #2a2a2a, 1 , 0.0 , 5 , 5 );\n"
+
+        );
     }
 }

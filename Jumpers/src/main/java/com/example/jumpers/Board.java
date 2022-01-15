@@ -56,7 +56,7 @@ public class Board {
 
     public void setActualChoosed(Jumper actualChoosed) {
         if (!this.actualChoosedMovedNormal && !this.actualChoosedMovedJump) {
-            System.out.println("Wybrano pionek: " + actualChoosed.getPosition().getX() + " " + actualChoosed.getPosition().getY());
+            System.out.println("Wybrano pionek: " + actualChoosed.getPosition().getX() + " " + actualChoosed.getPosition().getY() + "field "  + this.fields[actualChoosed.getPosition().getX() ][actualChoosed.getPosition().getY() ]);
             this.actualChoosed = actualChoosed;
             this.startOfMoves = actualChoosed.getPosition();
             this.movesOfActual.clear();
@@ -91,17 +91,20 @@ public class Board {
             if (!actualJumperMove()) {
                 // this.actualChoosed.removeClickOn();
             }
-            System.out.println("Cannot move from: " + this.actualChoosed.getPosition().getX() + "/" + this.actualChoosed.getPosition().getY());
+            System.out.println("Cannot move from: " + this.actualChoosed.getPosition().getX() + "/" + this.actualChoosed.getPosition().getY() + this.actualChoosedMovedNormal + this.actualChoosedMovedJump);
+            out.println("Field of pawn"  + this.fields[oldPosition.getX()][oldPosition.getY()]);
+            out.println("Field to move"  + this.fields[newPosition.getX()][newPosition.getY()]);
             return false;
         }
     }
 
     public boolean checkMove(Position oldPosition, Position newPosition) {
         if (!this.actualChoosed.getPlayer().equals(this.actualPlay)) {
+            out.println("Diff player");
             return false;
         }
         if (!this.actualChoosedMovedJump && !this.actualChoosedMovedNormal && oldPosition.normalMove(newPosition) && checkField(newPosition)) {
-
+            out.println("Normal move");
             this.actualChoosedMovedNormal = true;
             return true;
 
@@ -111,6 +114,7 @@ public class Board {
         //        return true;
         //   }
         if (!this.actualChoosedMovedNormal && oldPosition.jumpMove(newPosition) && checkField(newPosition) && fieldBetween(oldPosition, newPosition) != null && !checkField(fieldBetween(oldPosition, newPosition))) {
+            out.println("Jump move");
             this.actualChoosedMovedJump = true;
             return true;
         }
@@ -126,7 +130,9 @@ public class Board {
     }
 
     public void makeMove(Position oldPosition, Position newPosition) {
-        this.fields[newPosition.getX()][newPosition.getY()] = this.fields[oldPosition.getX()][oldPosition.getY()];
+        out.println("From " + oldPosition.toString() + " to " + newPosition.toString() );
+        Jumper oldJumper =this.fields[oldPosition.getX()][oldPosition.getY()];
+        this.fields[newPosition.getX()][newPosition.getY()] = new Jumper( oldJumper.getPlayer(), oldJumper.getColor() , oldPosition ,this.pane ) ;
         this.fields[oldPosition.getX()][oldPosition.getY()] = null;
 
 
@@ -203,6 +209,7 @@ public class Board {
             this.actualPlay = this.player1;
             playerLabel.setText("Now " + this.player1.getNick());
         }
+        playerLabel.setTextFill(this.actualPlay.getColor());
         getActualChoosed().removeClickOn();
 
     }
@@ -211,30 +218,41 @@ public class Board {
 
         this.actualChoosedMovedJump = false;
         this.actualChoosedMovedNormal = false;
-        int numberOfMoves = this.movesOfActual.size();
+        int numberOfMoves = this.movesOfActual.size()-1;
 
         Thread thread = new Thread(() -> {
             try {
-                for (int i = 0; i < numberOfMoves; i++) {
-                    int finalI = i;
-                    Platform.runLater(() -> {
-                        makeMove(actualChoosed.getPosition(), movesOfActual.get(numberOfMoves - 1 - finalI));
-                        actualChoosed.setPosition(movesOfActual.get(numberOfMoves - finalI - 1));
-                        actualChoosed.removeClickOn();
-                        pane.getChildren().remove(actualChoosed.getCircleJumper());
-                        pane.add(actualChoosed.getCircleJumper(), movesOfActual.get(numberOfMoves - finalI - 1).getY(), movesOfActual.get(numberOfMoves - finalI - 1).getX());
-                        pane.setHalignment(actualChoosed.getCircleJumper(), HPos.CENTER);
-                    });
+                if (this.actualChoosed!=null){
+                    for (int i = 0; i < numberOfMoves; i++) {
+                        int finalI = i;
+                        Platform.runLater(() -> {
+                            makeMove(actualChoosed.getPosition(), movesOfActual.get(numberOfMoves - 1 - finalI));
+                            this.actualChoosedMovedJump = false;
+                            this.actualChoosedMovedNormal = false;
+
+                            actualChoosed.setPosition(movesOfActual.get(numberOfMoves - finalI - 1));
+                            actualChoosed.removeClickOn();
+                            pane.getChildren().remove(actualChoosed.getCircleJumper());
+                            pane.add(actualChoosed.getCircleJumper(), movesOfActual.get(numberOfMoves - finalI - 1).getY(), movesOfActual.get(numberOfMoves - finalI - 1).getX());
+                            pane.setHalignment(actualChoosed.getCircleJumper(), HPos.CENTER);
+
+                        });
 
 
-                    Thread.sleep(600);
+                        Thread.sleep(600);
+                }
+                    this.actualChoosed=null;
+                    this.movesOfActual.clear();
                 }
 
             } catch (InterruptedException exc) {
                 throw new Error("Unexpected interruption");
             }
         });
+
+
         thread.start();
+
         alert.setText("Make new move");
     }
 
@@ -250,7 +268,16 @@ public class Board {
         if (actualChoosed.getPosition().normalMove(movesOfActual.get(numberOfMoves - 1))) {
             this.actualChoosedMovedNormal = false;
         }
+        if (actualChoosed.getPosition().jumpMove(movesOfActual.get(numberOfMoves - 1)) && numberOfMoves==1) {
+            this.actualChoosedMovedJump = false;
+        }
         makeMove(actualChoosed.getPosition(), movesOfActual.get(numberOfMoves - 1));
+        if (actualChoosed.getPosition().normalMove(movesOfActual.get(numberOfMoves - 1))) {
+            this.actualChoosedMovedNormal = false;
+        }
+        if (actualChoosed.getPosition().jumpMove(movesOfActual.get(numberOfMoves - 1)) && numberOfMoves==1) {
+            this.actualChoosedMovedJump = false;
+        }
         actualChoosed.setPosition(movesOfActual.get(numberOfMoves - 1));
         pane.getChildren().remove(actualChoosed.getCircleJumper());
         pane.add(actualChoosed.getCircleJumper(), movesOfActual.get(numberOfMoves - 1).getY(), movesOfActual.get(numberOfMoves - 1).getX());
@@ -295,7 +322,7 @@ public class Board {
         }
     }
 
-    public void restartGame(Label whoPlay) {
+    public void restartGame(Label whoPlay ) {
 
         for (int i = 0; i < this.boardSize; i++) {
             System.out.println(i);
@@ -330,5 +357,31 @@ public class Board {
 
         }
 
+    }
+
+    public void removeGame(Label label) {
+        for (int i = 0; i < this.boardSize; i++) {
+            System.out.println(i);
+
+            this.pane.getChildren().remove(this.player1.getJumpers().get(2 * i).getCircleJumper());
+            this.pane.getChildren().remove(this.player1.getJumpers().get(2 * i + 1).getCircleJumper());
+
+            this.pane.getChildren().remove(this.player2.getJumpers().get(2 * i).getCircleJumper());
+            this.pane.getChildren().remove(this.player2.getJumpers().get(2 * i + 1).getCircleJumper());
+
+            for (int j = 2; j < this.boardSize - 2; j++) {
+                this.fields[j][i] = null;
+            }
+            this.actualChoosedMovedJump=false;
+            if(actualChoosed!=null){
+                this.actualChoosed.removeClickOn();
+
+            }
+            this.actualChoosed=null;
+            this.actualChoosedMovedNormal=false;
+            this.actualPlay=player1;
+            label.setText("Now " + player1.getNick());
+
+        }
     }
 }
