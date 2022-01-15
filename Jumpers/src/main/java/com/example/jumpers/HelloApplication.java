@@ -32,6 +32,8 @@ public class HelloApplication extends Application {
 
 
         Label alert= new Label("");
+        addStyleAlerts(alert);
+        addStyleAlerts(alert);
         root.add(alert, 9,4,1,1);
         BackgroundImage myB= new BackgroundImage(new Image("com\\example\\jumpers\\background.jpg",1000,800,false,true),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
@@ -76,7 +78,6 @@ public class HelloApplication extends Application {
         Board board1= new Board(root);
 
 
-
         final Label[] whoMove = {new Label("")};
         addStyleAlerts(whoMove[0]);
         root.add(whoMove[0], 9  , 3, 1,1);
@@ -99,7 +100,7 @@ public class HelloApplication extends Application {
             }
         });
 
-        Button resetMovePlayer = new Button("Reset");
+        Button resetMovePlayer = new Button("Reset move");
         root.add(resetMovePlayer,9,7,1,1);
 
         //RESET MOVE OF ACTUAL PLAYER
@@ -108,12 +109,12 @@ public class HelloApplication extends Application {
             @Override
             public void handle(MouseEvent event) {
 
-                board1.resetMove(root);
+                board1.resetMove(root,alert);
             }
         });
 
 
-        Button undoMovePlayer = new Button("Undo");
+        Button undoMovePlayer = new Button("Undo move");
         root.add(undoMovePlayer,9,6,1,1);
 
         //RESET MOVE OF ACTUAL PLAYER
@@ -126,6 +127,27 @@ public class HelloApplication extends Application {
             }
         });
 
+        Button resetGame = new Button("Reset game");
+        root.add(resetGame,10,7,1,1);
+        addButtonStyle(resetGame);
+
+        resetGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                board1.restartGame(whoMove[0]);
+
+            }
+        });
+
+
+        undoMovePlayer.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                board1.undoMove(root , alert);
+            }
+        });
 
         //ENTRY SCENE
         GridPane pane = new GridPane();
@@ -159,7 +181,7 @@ public class HelloApplication extends Application {
 
         pane.add(colorPicker1, 3,2,1,1);
         pane.add(colorPicker2, 3,3,1,1);
-
+        Scene gameScene= new Scene(root, 1000, 600);
         Button submit = new Button("Start");
         addButtonStyle(submit);
         pane.add(submit,2,4,2,1);
@@ -173,14 +195,32 @@ public class HelloApplication extends Application {
                 player1.setBoard(board1);
                 player2.setBoard(board1);
                 board1.setActualPlay(player1);
-                whoMove[0].setText(nickPlayer1.getText());
+                whoMove[0].setText("Now " +nickPlayer1.getText());
                 board1.setNicksAndColors(nickPlayer1.getText(), nickPlayer2.getText() ,colorPicker1.getValue() , colorPicker2.getValue());
-                stage.setScene(new Scene(root, 1000, 600));
+                stage.setScene(gameScene);
                 stage.show();
             }
         });
         Scene entryScene = new Scene(pane,1000,600);
         stage.setScene(entryScene);
+
+
+        Button backToMenu = new Button("Back");
+        root.add(backToMenu,10,0,1,1);
+        addButtonStyle(backToMenu);
+        backToMenu.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                colorPicker1.setValue(Color.RED);
+                colorPicker2.setValue(Color.BLACK);
+                nickPlayer1.setText("Player One");
+                nickPlayer2.setText("Player Two");
+                stage.setScene(entryScene);
+                stage.show();
+
+            }
+        });
+
         stage.show();
 
 
