@@ -11,29 +11,8 @@ public class Player {
     private ArrayList<Jumper> jumpers = new ArrayList<Jumper>(){};
     private Color color;
     private Board board;
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-
-
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
-
     private String nick="Player 1";
-    public ArrayList<Jumper> getJumpers() {
-        return jumpers;
-    }
+
 
     public Player(Color color, int startRow , GridPane g ) {
         this.color=color;
@@ -50,4 +29,27 @@ public class Player {
     public Board getBoard() {
         return this.board;
     }
+
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public ArrayList<Jumper> getJumpers() {
+        return jumpers;
+    }
+
+
 }

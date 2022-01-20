@@ -142,8 +142,7 @@ public class HelloApplication extends Application {
 
 
 
-        //ENTRY PANEL SET SETTINGS AND ADD ELEMENTS
-        //pane.setGridLinesVisible(true);
+        //ENTRY PANEL SET PARAMETERS AND ADD ELEMENTS
         pane.minWidth(600);
         pane.minHeight(1000);
         pane.setAlignment(Pos.CENTER);
@@ -220,6 +219,7 @@ public class HelloApplication extends Application {
 
 
 
+        //NEW WINDOW AFTER END GAME- WHO WIN
         Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.WINDOW_MODAL);
         Label winner = new Label("");
@@ -252,9 +252,11 @@ public class HelloApplication extends Application {
                             System.out.println( "Click on " + GridPane.getRowIndex( node) + "/" + GridPane.getColumnIndex( node));
                             boolean ifMove = board1.canMove( new Position(GridPane.getRowIndex( node), GridPane.getColumnIndex( node)));
                             alert.setText("");
+
                             if ( board1.getActualChoosed()!=null ){
-                                //board1.getActualChoosed().removeClickOn();
+                                //CHECK IF PLAYER WIN
                                 if (board1.checkForWin(board1.getActualChoosed().getPlayer())){
+                                    //SHOW WIN ALERT WINDOW
                                     System.out.println("Wygrywasz gre!");
                                     winner.setText( board1.getActualChoosed().getPlayer().getNick() + " win!");
                                     dialogStage.show();
@@ -269,6 +271,8 @@ public class HelloApplication extends Application {
             }
         });
     }
+
+
 
     //LOGO STYLE
     public void addStyle(Label text){
@@ -304,5 +308,8 @@ public class HelloApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
+
+
+
 
 }

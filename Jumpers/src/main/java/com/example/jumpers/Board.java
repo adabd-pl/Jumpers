@@ -1,19 +1,12 @@
 package com.example.jumpers;
 
-
-
 import javafx.application.Platform;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
+
 
 import static java.lang.System.out;
 
@@ -109,10 +102,6 @@ public class Board {
             return true;
 
         }
-        //  if (oldPosition.jumpMove(newPosition)&& checkField(newPosition) && crossJumpCheck(oldPosition,newPosition)){
-        //        System.out.println("crossJump");
-        //        return true;
-        //   }
         if (!this.actualChoosedMovedNormal && oldPosition.jumpMove(newPosition) && checkField(newPosition) && fieldBetween(oldPosition, newPosition) != null && !checkField(fieldBetween(oldPosition, newPosition))) {
             out.println("Jump move");
             this.actualChoosedMovedJump = true;
@@ -153,15 +142,6 @@ public class Board {
 
         return null;
     }
-///taki ruch niepoprawny
-  /*  public boolean crossJumpCheck(Position positionOne, Position positionTwo){
-        if(Math.abs(positionOne.getX()- positionTwo.getX())==1 && Math.abs(positionOne.getX()- positionTwo.getX())==1 ){
-            if (!checkField(new Position(positionOne.getX(), positionTwo.getY())) || !checkField(new Position(positionTwo.getX(), positionOne.getY() ))){
-                return true;
-            }
-        }
-        return false;
-    }*/
 
 
     public boolean checkForWin(Player player) {
